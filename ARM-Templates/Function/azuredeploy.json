@@ -81,8 +81,8 @@
         "functionStorageAccountName": "[concat(uniquestring(parameters('functionAppName')), 'fnappstrg')]",
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
         "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
-        "repoURL": i.e. "https://github.com/andrewcooke-isti/KeyVault-Secrets-Rotation-SignalRService-PowerShell.git"
-        //"ProviderResourceId": i.e. "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
+        "repoURL": "https://github.com/andrewcooke-isti/KeyVault-Secrets-Rotation-SignalRService-PowerShell.git",
+        "ProviderResourceId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('signalRServiceRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('signalRServiceName'))]"
     },
     "resources": [
         {
@@ -268,7 +268,7 @@
                         {
                             "type": "Microsoft.KeyVault/vaults/secrets",
                             "apiVersion": "2019-09-01",
-                            "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
+                            "condition": "[parameters('deploySecretWithSignalRServiceKeyToKeyVault')]",
                             "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
                             "location": "[resourceGroup().location]",
                             "dependsOn": [],
@@ -317,7 +317,7 @@
             //                 }
                             "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
                             "apiVersion": "2018-09-01-preview",
-                            "same": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
+                            "same": "[concat(parameters('signalRServiceName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
                             "dependsOn": [
                             
                             ],
@@ -325,7 +325,7 @@
                                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
                                 "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
                             }
-        }
+                        }
                     ]
                 }
             }
