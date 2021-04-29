@@ -10,7 +10,7 @@
             }
         },
         "signalRServiceName": {
-            "defaultValue": "",
+            "defaultValue": "[concat(resourceGroup().name, '-isti-signalr')]",
             "type": "String",
             "metadata": {
                 "description": "The name of the SignalRService with keys to rotate."
@@ -24,7 +24,7 @@
             }
         },
         "keyVaultName": {
-            "defaultValue": "",
+            "defaultValue": "[concat(resourceGroup().name, '-kv')]",
             "type": "String",
             "metadata": {
                 "description": "The name of the existing key vault where secrets are stored."
@@ -63,6 +63,7 @@
             }
         },
         "secretExpirationDateUnixTime": {
+            "defaultValue": 2000000000,
             "type": "int",
             "metadata": {
                 "description": "Expiry date in seconds since 1970-01-01T00:00:00Z."
