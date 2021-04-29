@@ -2,18 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-          "[ServiceType]RG": {
+          "signalRServiceRG": {
             "defaultValue": "[resourceGroup().name]",
             "type": "String",
             "metadata": {
-                "description": "The name of the resource group where [ServiceType] with keys to rotate has deployed."
+                "description": "The name of the resource group where SignalRService with keys to rotate has deployed."
             }
         },
-        "[ServiceType]Name": {
+        "signalRServiceName": {
             "defaultValue": "",
             "type": "String",
             "metadata": {
-                "description": "The name of the [ServiceType] with keys to rotate."
+                "description": "The name of the SignalRService with keys to rotate."
             }
         },
         "keyVaultRG": {
@@ -42,24 +42,24 @@
 			}
 		},
         "functionAppName": {
-            "defaultValue": "[concat(resourceGroup().name, '-[ServiceType]-rotation-fnapp')]",
+            "defaultValue": "[concat(resourceGroup().name, '-SignalRService-rotation-fnapp')]",
             "type": "String",
             "metadata": {
                 "description": "The name of the function app that you wish to create."
             }
         },
         "secretName": {
-            "defaultValue": "[ServiceType]Key",
+            "defaultValue": "SignalRServiceKey",
             "type": "String",
             "metadata": {
-                "description": "The name of the secret where [ServiceType] keys are stored."
+                "description": "The name of the secret where SignalRService keys are stored."
             }
         },
-        "deploySecretWith[ServiceType]KeyToKeyVault": {
+        "deploySecretWithSignalRServiceKeyToKeyVault": {
             "defaultValue": "true",
             "type": "bool",
             "metadata": {
-                "description": "Add [ServiceType] key to key vault. New secret is created with key as value"
+                "description": "Add SignalRService key to key vault. New secret is created with key as value"
             }
         },
         "secretExpirationDateUnixTime": {
@@ -81,7 +81,7 @@
         "functionStorageAccountName": "[concat(uniquestring(parameters('functionAppName')), 'fnappstrg')]",
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
         "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
-        //"repoURL": i.e. "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git"
+        "repoURL": i.e. "https://github.com/andrewcooke-isti/KeyVault-Secrets-Rotation-SignalRService-PowerShell.git"
         //"ProviderResourceId": i.e. "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
     },
     "resources": [
@@ -99,13 +99,13 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
-            "name": "[concat(resourceGroup().name, '-[ServiceType]-rotation-fnapp-plan')]",
+            "name": "[concat(resourceGroup().name, '-SignalRService-rotation-fnapp-plan')]",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "[variables('appServiceSKU')]"
             },
             "properties": {
-                "name": "[concat(resourceGroup().name, '-[ServiceType]-rotation-fnapp-plan')]"
+                "name": "[concat(resourceGroup().name, '-SignalRService-rotation-fnapp-plan')]"
                
             }
         },
@@ -115,7 +115,7 @@
             "name": "[parameters('functionAppName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', concat(resourceGroup().name, '-[ServiceType]-rotation-fnapp-plan'))]",
+                "[resourceId('Microsoft.Web/serverfarms', concat(resourceGroup().name, '-SignalRService-rotation-fnapp-plan'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('functionStorageAccountName'))]"
             ],
             "kind": "functionapp",
@@ -124,7 +124,7 @@
             },
             "properties": {
                 "enabled": true,
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',concat(resourceGroup().name, '-[ServiceType]-rotation-fnapp-plan'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',concat(resourceGroup().name, '-SignalRService-rotation-fnapp-plan'))]",
                 "siteConfig": {
                     "appSettings": [
                         {
@@ -234,7 +234,7 @@
                                     "properties": {
                                         "maxEventsPerBatch": 1,
                                         "preferredBatchSizeInKilobytes": 64,
-                                        "resourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'/functions/AKV[ServiceType]Rotation')]"
+                                        "resourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'/functions/AKVSignalRServiceRotation')]"
                                     }
                                 },
                                 "filter": {
@@ -265,6 +265,25 @@
                         //         }
                         //     }
                         // }
+                        {
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "apiVersion": "2019-09-01",
+                            "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
+                            "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [],
+                            "tags": {
+                                "ValidityPeriodDays":"[parameters('secretValidityPeriodDays')]",
+                                "CredentialId":"key1",
+                                "ProviderAddress":"[variables('ProviderResourceId')]"
+                            },
+                            "properties": {
+                                "value": "[listKeys(variables('ProviderResourceId'), '2019-04-01').keys[0].value]",
+                                "attributes": {
+                                    "exp": "[parameters('secretExpirationDateUnixTime')]"
+                                }
+                            }
+                        }
                     ]
                 }
             }
@@ -274,7 +293,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "subscriptionId": "[subscription().subscriptionId]",
-            "resourceGroup": "[parameters('[ServiceType]RG')]",
+            "sesourceGroup": "[parameters('SignalRServiceRG')]",
             "dependsOn": [
                  "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
             ],
@@ -296,7 +315,17 @@
             //                     "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
             //                     "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
             //                 }
-                        }
+                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+                            "apiVersion": "2018-09-01-preview",
+                            "same": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
+                            "dependsOn": [
+                            
+                            ],
+                            "properties": {
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
+                            }
+        }
                     ]
                 }
             }

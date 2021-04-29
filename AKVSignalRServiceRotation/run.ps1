@@ -8,15 +8,30 @@ function RegenerateCredential($credentialId, $providerAddress){
     #EXAMPLE FOR STORAGE
 
     <#  
-    $storageAccountName = ($providerAddress -split '/')[8]
+    $signalRServiceName = ($providerAddress -split '/')[8]
     $resourceGroupName = ($providerAddress -split '/')[4]
     
     #Regenerate key 
-    $operationResult = New-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName -KeyName $credentialId
-    $newCredentialValue = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageAccountName|where KeyName -eq $credentialId).value 
+    $operationResult = New-AzsignalRServiceKey -ResourceGroupName $resourceGroupName -Name $signalRServiceName -KeyName $credentialId
+    $newCredentialValue = (Get-AzsignalRServiceKey -ResourceGroupName $resourceGroupName -AccountName $signalRServiceName|where KeyName -eq $credentialId).value 
     return $newCredentialValue
     
     #>
+
+    $signalRServiceName = ($providerAddress -split '/')[8]
+    $resourceGroupName = ($providerAddress -split '/')[4]
+    
+    #Regenerate key 
+    #https://docs.microsoft.com/en-us/powershell/module/az.signalr/new-azsignalrkey
+    #https://docs.microsoft.com/en-us/powershell/module/az.signalr/get-azsignalrkey
+    If ($credentialId -eq "key1") {
+        $operationResult = New-AzSignalRKey -ResourceGroupName $resourceGroupName -Name $signalRServiceName -KeyType Primary
+        $newCredentialValue = (Get-AzSignalRKey -ResourceGroupName $resourceGroupName -Name $signalRServiceName).PrimaryKey
+    } Else {
+        $operationResult = New-AzSignalRKey -ResourceGroupName $resourceGroupName -Name $signalRServiceName -KeyType Secondary
+        $newCredentialValue = (Get-AzSignalRKey -ResourceGroupName $resourceGroupName -Name $signalRServiceName).SecondaryKey
+    }
+    return $newCredentialValue
 }
 
 function GetAlternateCredentialId($credentialId){
@@ -37,6 +52,18 @@ function GetAlternateCredentialId($credentialId){
        return "key1"
    }
    #>
+
+    # it's possible this should all be primary / secondary...
+    $validCredentialIdsRegEx = 'key[1-2]'
+   
+    If($credentialId -NotMatch $validCredentialIdsRegEx){
+        throw "Invalid credential id: $credentialId. Credential id must follow this pattern:$validCredentialIdsRegEx"
+    }
+    If($credentialId -eq 'key1'){
+        return "key2"
+    } Else {
+        return "key1"
+    }
 }
 
 function AddSecretToKeyVault($keyVAultName,$secretName,$secretvalue,$exprityDate,$tags){
