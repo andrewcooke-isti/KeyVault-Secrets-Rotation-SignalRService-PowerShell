@@ -294,7 +294,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "subscriptionId": "[subscription().subscriptionId]",
-            "sesourceGroup": "[parameters('SignalRServiceRG')]",
+            "resourceGroup": "[parameters('signalRServiceRG')]",
             "dependsOn": [
                  "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
             ],
