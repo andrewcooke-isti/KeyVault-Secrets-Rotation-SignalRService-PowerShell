@@ -279,7 +279,7 @@
                                 "ProviderAddress":"[variables('ProviderResourceId')]"
                             },
                             "properties": {
-                                "value": "[listKeys(variables('ProviderResourceId'), '2019-04-01').keys[0].value]",
+                                "value": "[listKeys(variables('ProviderResourceId'), '2020-05-01').keys[0].value]",
                                 "attributes": {
                                     "exp": "[parameters('secretExpirationDateUnixTime')]"
                                 }
