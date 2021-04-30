@@ -318,7 +318,7 @@
             //                 }
                             "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
                             "apiVersion": "2018-09-01-preview",
-                            "same": "[concat(parameters('signalRServiceName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
+                            "name": "[concat(parameters('signalRServiceName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
                             "dependsOn": [
                             
                             ],
