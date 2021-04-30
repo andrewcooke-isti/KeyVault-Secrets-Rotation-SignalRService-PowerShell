@@ -316,7 +316,7 @@
             //                     "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
             //                     "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
             //                 }
-                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+                            "type": "Microsoft.SignalRService/SignalR/providers/roleAssignments",
                             "apiVersion": "2018-09-01-preview",
                             "name": "[concat(parameters('signalRServiceName'), '/Microsoft.Authorization/', guid(concat(parameters('signalRServiceName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
                             "dependsOn": [
