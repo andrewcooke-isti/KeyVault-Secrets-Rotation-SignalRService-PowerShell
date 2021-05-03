@@ -74,7 +74,7 @@ function AddSecretToKeyVault($keyVAultName,$secretName,$secretvalue,$exprityDate
 
 function RoatateSecret($keyVaultName,$secretName,$secretVersion){
     #Retrieve Secret
-    $secret = (Get-AzKeyVaultSecret -VaultName $keyVAultName -Name $secretName)
+    $secret = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $secretName)
     Write-Host "Secret Retrieved"
     
     If($secret.Version -ne $secretVersion){

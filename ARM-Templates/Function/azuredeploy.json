@@ -56,7 +56,7 @@
             }
         },
         "deploySecretWithSignalRServiceKeyToKeyVault": {
-            "defaultValue": "true",
+            "defaultValue": true,
             "type": "bool",
             "metadata": {
                 "description": "Add SignalRService key to key vault. New secret is created with key as value"
@@ -323,7 +323,8 @@
                             
                             ],
                             "properties": {
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+				// opaque UUID below is SignalR Service Owner role.  it may be too general.  see https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7e4f1700-ea5a-4f59-8f37-079cfe29dce3')]",
                                 "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
                             }
                         }
