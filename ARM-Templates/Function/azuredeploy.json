@@ -324,7 +324,10 @@
                             ],
                             "properties": {
 				// opaque UUID below is SignalR Service Owner role.  it may be too general.  see https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7e4f1700-ea5a-4f59-8f37-079cfe29dce3')]",
+				// hmmm.  was not general enough.  still got forbidden on trying to generate key.  docs say all REST API, so maybe it's not a REST API.
+                                // "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7e4f1700-ea5a-4f59-8f37-079cfe29dce3')]",
+				// so let's go full nuclear option and grant owner
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                 "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
                             }
                         }

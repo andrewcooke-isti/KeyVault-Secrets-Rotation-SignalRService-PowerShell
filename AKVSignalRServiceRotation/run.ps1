@@ -72,7 +72,7 @@ function AddSecretToKeyVault($keyVAultName,$secretName,$secretvalue,$exprityDate
 
 }
 
-function RoatateSecret($keyVaultName,$secretName,$secretVersion){
+function RotateSecret($keyVaultName,$secretName,$secretVersion){
     #Retrieve Secret
     $secret = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $secretName)
     Write-Host "Secret Retrieved"
@@ -127,5 +127,5 @@ Write-Host "Secret Version: $secretVersion"
 
 #Rotate secret
 Write-Host "Rotation started."
-RoatateSecret $keyVAultName $secretName $secretVersion
+RotateSecret $keyVAultName $secretName $secretVersion
 Write-Host "Secret Rotated Successfully"
