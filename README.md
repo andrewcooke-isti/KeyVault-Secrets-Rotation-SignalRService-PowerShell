@@ -1,6 +1,38 @@
-# WARNING - INCOMPLETE, INCORRECT, UNDER DEVELOPMENT BY ONE VERY CONFUSED DEV
+# ADDED BY andrewcooke-isti
 
-# KeyVault-Secrets-Rotation-SignalRService-PowerShell
+## Context
+
+[This
+article](https://docs.microsoft.com/en-gb/azure/key-vault/secrets/tutorial-rotation-dual?tabs=azure-cli)
+includes (near the bottom) a [project
+template](https://serverlesslibrary.net/sample/bc72c6c3-bd8f-4b08-89fb-c5720c1f997f)
+for key rotation.  This repo is based on that template, modified for SignalR.
+
+## Managed Identities
+
+I did this work because I could not get managed identities to work for
+SignalR.  However, that issue was eventually solved:
+
+  * Edit the connection string to replace the secret key with `AuthType=aad`
+
+  * Be very careful about what code versions you are using.  I used dotnet 3.1
+    and, in the csproj file:
+
+      <ItemGroup>
+	<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.3.0" />
+	<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" />
+	<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+      </ItemGroup>
+
+## Permissions
+
+If you don't want to use managed identities, but instead do key rotation using
+this code, you need to follow the instructions in the article above and *also*
+add the function app as owner of the resource group.  With that done you can
+trigger an expiry and see rotation (eventually - it takes a few mins) in the
+function app log stream.
+
+# ORIGNAL DOCS - KeyVault-Secrets-Rotation-SignalRService-PowerShell
 
 Functions regenerate individual key (alternating between two keys) in SignalRService and add regenerated key to Key Vault as new version of the same secret.
 
