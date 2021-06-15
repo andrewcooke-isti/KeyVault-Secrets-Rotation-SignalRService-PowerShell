@@ -8,7 +8,8 @@ For original docs scroll down
 article](https://docs.microsoft.com/en-gb/azure/key-vault/secrets/tutorial-rotation-dual?tabs=azure-cli)
 includes (near the bottom) a [project
 template](https://serverlesslibrary.net/sample/bc72c6c3-bd8f-4b08-89fb-c5720c1f997f)
-for key rotation.  This repo is based on that template, modified for SignalR.
+for key rotation.  This repo is based on that template, modified for SignalR
+(I changed very little - afair just handling the different names for keys).
 
 ## Managed Identities
 
