@@ -36,6 +36,12 @@ function app log stream.
 
 Thanks to Ramchandra Kudtarkar from MS support for help with this.
 
+## Known Issues
+
+If you look in the function app log file there are various warnings about
+things being deprecated, so this code likely needs some work for production
+use.
+
 # ORIGNAL DOCS - KeyVault-Secrets-Rotation-SignalRService-PowerShell
 
 Functions regenerate individual key (alternating between two keys) in SignalRService and add regenerated key to Key Vault as new version of the same secret.
