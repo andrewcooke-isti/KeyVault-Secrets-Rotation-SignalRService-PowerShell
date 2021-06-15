@@ -24,6 +24,8 @@ SignalR.  However, that issue was eventually solved:
 	<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
       </ItemGroup>
 
+Thanks to Manjunatha N V from MS support for help with this.
+
 ## Permissions
 
 If you don't want to use managed identities, but instead do key rotation using
@@ -31,6 +33,8 @@ this code, you need to follow the instructions in the article above and *also*
 add the function app as owner of the resource group.  With that done you can
 trigger an expiry and see rotation (eventually - it takes a few mins) in the
 function app log stream.
+
+Thanks to Ramchandra Kudtarkar from MS support for help with this.
 
 # ORIGNAL DOCS - KeyVault-Secrets-Rotation-SignalRService-PowerShell
 
