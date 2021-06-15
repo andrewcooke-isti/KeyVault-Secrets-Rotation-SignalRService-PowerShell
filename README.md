@@ -18,11 +18,11 @@ SignalR.  However, that issue was eventually solved:
   * Be very careful about what code versions you are using.  I used dotnet 3.1
     and, in the csproj file:
 
-      %lt;ItemGroup&gt;
-	%lt;PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.3.0" /&gt;
-	%lt;PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" /&gt;
-	%lt;PackageReference Include="Newtonsoft.Json" Version="12.0.2" /&gt;
-      %lt;/ItemGroup&gt;
+      &lt;ItemGroup&gt;
+	&lt;PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.3.0" /&gt;
+	&lt;PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.12" /&gt;
+	&lt;PackageReference Include="Newtonsoft.Json" Version="12.0.2" /&gt;
+      &lt;/ItemGroup&gt;
 
 Thanks to Manjunatha N V from MS support for help with this.
 
